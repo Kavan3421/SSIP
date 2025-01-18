@@ -6,11 +6,10 @@ import Navbar from "./components/Navbar";
 import styled from "styled-components";
 // import Authentication from "./pages/Authentication";
 import Dashboard from "./pages/Dashboard";
-import Contact from "./pages/Contact";
-import ProfileUpdate from "./pages/ProfileUpdate.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ContactEmergency } from "@mui/icons-material";
 import DatabyDate from "./pages/DatabyDate";
+import Request from "./pages/Request.jsx";
 
 const Container = styled.div`
   width: 100%;
@@ -35,8 +34,7 @@ function App() {
           <Routes>
             <Route path="/" exact element={<Dashboard />} />
             <Route path="/databydate" exact element={<DatabyDate />} />
-            <Route path="/contact" exact element={<Contact />} />
-            <Route path="/profile" exact element={<ProfileUpdate />} />
+            <Route path="/requests" exact element={<Request/>} />
           </Routes>
         </Container>
         {/* ) : (

@@ -35,7 +35,7 @@ const Contact = () => {
   const handleSubmit = async () => {
   
     setButtonLoading(true);
-    const token = localStorage.getItem("lionfit-app-token");
+    const token = localStorage.getItem("SurveilEye-app-token");
     if (validateInputs()) {
       try {
         await contact(token, { name, email, message}).then((res) => {

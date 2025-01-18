@@ -81,8 +81,10 @@ const DatabyDate = () => {
   const [loading, setLoading] = useState(false);
   const EntryExitData = {
     type: "entry",
-    time: 12
-  }
+    name: "xyz",
+    enroll: "12202080701052",
+    time: 12,
+  };
 
   return (
     <Container>
