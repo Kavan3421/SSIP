@@ -3,7 +3,7 @@ import React from 'react'
 const Request = () => {
   return (
     <div>
-      Reques  ts
+      Requests
     </div>
   )
 }

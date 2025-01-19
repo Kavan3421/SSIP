@@ -10,6 +10,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ContactEmergency } from "@mui/icons-material";
 import DatabyDate from "./pages/DatabyDate";
 import Request from "./pages/Request.jsx";
+import Livefeed from "./pages/Livefeed.jsx";
 
 const Container = styled.div`
   width: 100%;
@@ -35,6 +36,7 @@ function App() {
             <Route path="/" exact element={<Dashboard />} />
             <Route path="/databydate" exact element={<DatabyDate />} />
             <Route path="/requests" exact element={<Request/>} />
+            <Route path="/livefeed" exact element={<Livefeed/>} />
           </Routes>
         </Container>
         {/* ) : (

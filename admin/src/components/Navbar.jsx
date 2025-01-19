@@ -145,12 +145,14 @@ const Navbar = ({ currentUser }) => {
           <Navlink to="/">Dashboard</Navlink>
           <Navlink to="/databydate">History</Navlink>
           <Navlink to="/requests">Requests</Navlink>
+          <Navlink to="/livefeed">Live Feed</Navlink>
         </MobileMenu>
 
         <NavItems>
           <Navlink to="/">Dashboard</Navlink>
           <Navlink to="/databydate">History</Navlink>
           <Navlink to="/requests">Requests</Navlink>
+          <Navlink to="/livefeed">Live Feed</Navlink>
         </NavItems>
 
         <UserContainer>
