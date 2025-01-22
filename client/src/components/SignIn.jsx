@@ -39,35 +39,35 @@ const SignIn = () => {
     return true;
   };
 
-  const handelSignIn = async () => {
+  const handleSignIn = async () => {
     setLoading(true);
     setButtonDisabled(true);
-  
-    if (validateInputs()) {
-      try {
-        const res = await UserSignIn({ email, password });
-        dispatch(loginSuccess(res.data));
-        alert("Login Success");
-      } catch (err) {
-        const errorMessage = err.response?.data?.message || "An unexpected error occurred.";
-        alert(errorMessage);
-      } finally {
-        setLoading(false);
-        setButtonDisabled(false);
-      }
-    } else {
-      alert("Please ensure all fields are correctly filled.");
+
+    if (!validateInputs()) {
+      setLoading(false);
+      setButtonDisabled(false);
+      return;
+    }
+
+    try {
+      const res = await UserSignIn({ email, password }); // Adjusted the function name for consistency.
+      dispatch(loginSuccess(res.data)); // Assumes `res.data` includes user details.
+      alert("Login Successful");
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.error || "An unexpected error occurred.";
+      alert(errorMessage);
+    } finally {
       setLoading(false);
       setButtonDisabled(false);
     }
   };
-  
 
   return (
     <Container>
       <div>
-        <Title>Welcome to LionFit</Title>
-        <Span>Please login with your details here</Span>
+        <Title>Vehicle Security Login</Title>
+        <Span>Please log in with your registered email and password</Span>
       </div>
       <div
         style={{
@@ -91,8 +91,8 @@ const SignIn = () => {
         />
       </div>
       <Button
-        text="SignIn"
-        onClick={handelSignIn}
+        text="Sign In"
+        onClick={handleSignIn}
         isLoading={loading}
         isDisabled={buttonDisabled}
       />

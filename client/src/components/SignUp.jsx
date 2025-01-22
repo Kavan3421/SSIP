@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import TextInput from "./TextInput.jsx";
-import Button from "./Button.jsx";
-import { UserSignUp } from "../api/index.js";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../redux/reducers/userSlice.js";
+import TextInput from "./TextInput";
+import Button from "./Button";
+import { registerUser } from "../api";
 
 const Container = styled.div`
   width: 100%;
@@ -24,45 +22,70 @@ const Span = styled.div`
   color: ${({ theme }) => theme.text_secondary + 90};
 `;
 
-const SignUp = () => {
-  const dispatch = useDispatch();
+const ApplyForRegistration = () => {
   const [loading, setLoading] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [vehicleNumber, setVehicleNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [photos, setPhotos] = useState([]);
 
   const validateInputs = () => {
-    if (!name || !email || !password) {
+    if (!name || !email || !vehicleNumber || !password || !confirmPassword) {
       alert("Please fill in all fields");
+      return false;
+    }
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
       return false;
     }
     return true;
   };
 
-  const handelSignUp = async () => {
+  const handleFileChange = (e) => {
+    setPhotos(e.target.files);
+  };
+
+  const handleApply = async () => {
     setLoading(true);
     setButtonDisabled(true);
-    if (validateInputs()) {
-      await UserSignUp({ name, email, password })
-        .then((res) => {
-          dispatch(loginSuccess(res.data));
-          alert("Account Created Success");
-          setLoading(false);
-          setButtonDisabled(false);
-        })
-        .catch((err) => {
-          alert(err.response.data.message);
-          setLoading(false);
-          setButtonDisabled(false);
-        });
+
+    if (!validateInputs()) {
+      setLoading(false);
+      setButtonDisabled(false);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("vehicle_number", vehicleNumber);
+    formData.append("password", password);
+    formData.append("confirm_password", confirmPassword);
+    Array.from(photos).forEach((photo) => {
+      formData.append("photos", photo);
+    });
+
+    try {
+      const res = await registerUser(formData);
+      alert(res.data.message || "Registration successful!");
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.error || "An unexpected error occurred.";
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
+      setButtonDisabled(false);
     }
   };
+
   return (
     <Container>
       <div>
-        <Title>Create New Account 👋</Title>
-        <Span>Please enter details to create a new account</Span>
+        <Title>Apply for Registration 🚗</Title>
+        <Span>Please fill in the details below to register your vehicle</Span>
       </div>
       <div
         style={{
@@ -72,7 +95,7 @@ const SignUp = () => {
         }}
       >
         <TextInput
-          label="Full name"
+          label="Full Name"
           placeholder="Enter your full name"
           value={name}
           handelChange={(e) => setName(e.target.value)}
@@ -84,15 +107,41 @@ const SignUp = () => {
           handelChange={(e) => setEmail(e.target.value)}
         />
         <TextInput
+          label="Vehicle Number"
+          placeholder="Enter your vehicle number"
+          value={vehicleNumber}
+          handelChange={(e) => setVehicleNumber(e.target.value)}
+        />
+        <TextInput
           label="Password"
           placeholder="Enter your password"
           password
           value={password}
           handelChange={(e) => setPassword(e.target.value)}
         />
+        <TextInput
+          label="Confirm Password"
+          placeholder="Re-enter your password"
+          password
+          value={confirmPassword}
+          handelChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <div>
+          <label
+            style={{
+              fontSize: "16px",
+              fontWeight: "400",
+              marginBottom: "10px",
+              display: "block",
+            }}
+          >
+            Upload Photos
+          </label>
+          <input type="file" multiple onChange={handleFileChange} />
+        </div>
         <Button
-          text="SignUp"
-          onClick={handelSignUp}
+          text="Apply"
+          onClick={handleApply}
           isLoading={loading}
           isDisabled={buttonDisabled}
         />
@@ -101,4 +150,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default ApplyForRegistration;

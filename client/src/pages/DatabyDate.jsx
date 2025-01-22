@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateCalendar } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CircularProgress } from "@mui/material";
 import EntryExitCard from "../components/EntryExitCard";
+import { getDataByDate } from "../api";
 
 const Container = styled.div`
   flex: 1;
@@ -79,10 +80,25 @@ const CardWrapper = styled.div`
 const DatabyDate = () => {
   const [date, setDate] = useState("");
   const [loading, setLoading] = useState(false);
-  const EntryExitData = {
-    type: "entry",
-    time: 12
-  }
+  const [todaysData, setTodaysData] = useState([]);
+
+  const getTodaysData = async (otherUsers = false) => {
+    setLoading(true);
+    const token = localStorage.getItem("SurveilEye-app-token");
+    const queryString = date ? `?date=${date}&otherUsers=${otherUsers}` : "";
+    try {
+      const res = await getDataByDate(token, queryString);
+      setTodaysData(res?.data?.todaysWorkouts);
+    } catch (err) {
+      console.error("Error fetching Data:", err.response || err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getTodaysData();
+  }, [date]);
 
   return (
     <Container>
@@ -96,22 +112,18 @@ const DatabyDate = () => {
           </LocalizationProvider>
         </Left>
         <Right>
-        <Section>
-          <SecTitle>Data</SecTitle>
-          {/* {loading ? (
-            <CircularProgress />
-          ) : ( */}
-            <CardWrapper>
-              {/* {todaysWorkouts.map((workout) => ( */}
-                <EntryExitCard EntryExitData={EntryExitData}/>
-                <EntryExitCard EntryExitData={EntryExitData}/>
-                <EntryExitCard EntryExitData={EntryExitData}/>
-                <EntryExitCard EntryExitData={EntryExitData}/>
-                <EntryExitCard EntryExitData={EntryExitData}/>
-              {/* ))} */}
-            </CardWrapper>
-          {/* )} */}
-        </Section>
+          <Section>
+            <SecTitle>Data</SecTitle>
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <CardWrapper>
+                {todaysData.map((EntryExitData) => (
+                  <EntryExitCard EntryExitData={EntryExitData} />
+                ))}
+              </CardWrapper>
+            )}
+          </Section>
         </Right>
       </Wrapper>
     </Container>

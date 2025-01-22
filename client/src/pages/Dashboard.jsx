@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { counts } from "../utils/data.js";
-import { addWorkout, getDashboardDetails, getWorkouts } from "../api/index.js";
+import { getDataByDate } from "../api/index.js";
 import EntryExitCard from "../components/EntryExitCard.jsx";
 
 const Container = styled.div`
@@ -61,34 +60,34 @@ const CardWrapper = styled.div`
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState();
-  const [buttonLoading, setButtonLoading] = useState(false);
+  const [todaysData, setTodaysData] = useState([]);
 
-  const dashboardData = async () => {
+  const getTodaysData = async () => {
     setLoading(true);
     const token = localStorage.getItem("SurveilEye-app-token");
-    await getDashboardDetails(token).then((res) => {
-      setData(res.data);
+    await getDataByDate(token, "").then((res) => {
+      setTodaysData(res?.data?.todaysWorkouts);
       setLoading(false);
     });
   };
 
-  const EntryExitData = {
-    type: "entry",
-    time: 12,
-  };
+  useEffect(() => {
+    getTodaysData();
+  }, []);
+
+  // const EntryExitData = {
+  //   type: "entry",
+  //   time: 12,
+  // };
 
   return (
     <Container>
       <Section>
         <Title>Todays Data</Title>
         <CardWrapper>
-          <EntryExitCard EntryExitData={EntryExitData} />
-          <EntryExitCard EntryExitData={EntryExitData} />
-          <EntryExitCard EntryExitData={EntryExitData} />
-          <EntryExitCard EntryExitData={EntryExitData} />
-          <EntryExitCard EntryExitData={EntryExitData} />
-          <EntryExitCard EntryExitData={EntryExitData} />
+          {todaysData.map((EntryExitData) => (
+            <EntryExitCard EntryExitData={EntryExitData}/>
+          ))}
         </CardWrapper>
       </Section>
     </Container>

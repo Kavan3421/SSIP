@@ -63,7 +63,8 @@ const TextButton = styled.span`
 `;
 
 const Authentication = () => {
-  const [login, setLogin] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+
   return (
     <Container>
       <Left>
@@ -71,20 +72,24 @@ const Authentication = () => {
         <Image src={AuthImage} />
       </Left>
       <Right>
-        {!login ? (
+        {!isRegistering ? (
           <>
             <SignIn />
             <Text>
               Don't have an account?{" "}
-              <TextButton onClick={() => setLogin(true)}>SignUp</TextButton>
+              <TextButton onClick={() => setIsRegistering(true)}>
+                Apply for Registration
+              </TextButton>
             </Text>
           </>
         ) : (
           <>
             <SignUp />
             <Text>
-              Already have an account?{" "}
-              <TextButton onClick={() => setLogin(false)}>SignIn</TextButton>
+              Already registered?{" "}
+              <TextButton onClick={() => setIsRegistering(false)}>
+                Sign In
+              </TextButton>
             </Text>
           </>
         )}
