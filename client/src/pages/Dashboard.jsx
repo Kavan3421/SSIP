@@ -54,7 +54,7 @@ const Dashboard = () => {
       // Correctly parse the logs from the response
       const logs = response?.logs || {};
       
-      setLogsByTag(logs);
+      setLogsByTag(response?.data?.logs);
     } catch (error) {
       console.error("Error fetching today's data:", error);
     } finally {
