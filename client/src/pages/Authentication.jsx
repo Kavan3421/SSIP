@@ -6,55 +6,80 @@ import SignIn from "../components/SignIn";
 import SignUp from "../components/SignUp";
 
 const Container = styled.div`
-  flex: 1;
-  height: 100%;
+  min-height: 100vh; /* Ensure the background covers the entire viewport height */
   display: flex;
+  justify-content: center;
+  align-items: center;
   background: ${({ theme }) => theme.bg};
-  @media (max-width: 700px) {
-    flex-direction: column;
-  }
+  background-image: url(${AuthImage});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
 `;
+
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(222, 222, 222, 0.5); /* Light overlay */
+  z-index: 1;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start; /* Align content to the top */
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  padding: 40px;
+  gap: 32px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh; /* Avoid overflow */
+  overflow-y: auto; /* Enable scrolling */
+`;
+
 const Left = styled.div`
   flex: 1;
   position: relative;
-  @media (max-width: 700px) {
-    display: none;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
+
 const Logo = styled.img`
-  position: absolute;
-  width: 70px;
-  top: 40px;
-  left: 60px;
+  width: 250px;
   z-index: 10;
-`;
-const Image = styled.img`
-  position: relative;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
 `;
 
 const Right = styled.div`
   flex: 1;
-  position: relative;
   display: flex;
   flex-direction: column;
-  padding: 40px;
-  gap: 16px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Align items to the top */
+  gap: 16px;
+  width: 100%;
+  overflow-y: auto; /* Allow scrolling for content overflow */
+  padding-top: 20px; /* Prevent content from being cut off at the top */
 `;
 
 const Text = styled.div`
   font-size: 16px;
   text-align: center;
-  color: ${({ theme }) => theme.text_secondary};
+  color: ${({ theme }) => theme.white};
   margin-top: 16px;
   @media (max-width: 400px) {
     font-size: 14px;
   }
 `;
+
 const TextButton = styled.span`
   color: ${({ theme }) => theme.primary};
   cursor: pointer;
@@ -67,33 +92,35 @@ const Authentication = () => {
 
   return (
     <Container>
-      <Left>
-        <Logo src={LogoImage} />
-        <Image src={AuthImage} />
-      </Left>
-      <Right>
-        {!isRegistering ? (
-          <>
-            <SignIn />
-            <Text>
-              Don't have an account?{" "}
-              <TextButton onClick={() => setIsRegistering(true)}>
-                Apply for Registration
-              </TextButton>
-            </Text>
-          </>
-        ) : (
-          <>
-            <SignUp />
-            <Text>
-              Already registered?{" "}
-              <TextButton onClick={() => setIsRegistering(false)}>
-                Sign In
-              </TextButton>
-            </Text>
-          </>
-        )}
-      </Right>
+      <Overlay />
+      <ContentWrapper>
+        <Left>
+          <Logo src={LogoImage} />
+        </Left>
+        <Right>
+          {!isRegistering ? (
+            <>
+              <SignIn />
+              <Text>
+                Don't have an account?{" "}
+                <TextButton onClick={() => setIsRegistering(true)}>
+                  Register your vehicle
+                </TextButton>
+              </Text>
+            </>
+          ) : (
+            <>
+              <SignUp />
+              <Text>
+                Already registered?{" "}
+                <TextButton onClick={() => setIsRegistering(false)}>
+                  Sign In
+                </TextButton>
+              </Text>
+            </>
+          )}
+        </Right>
+      </ContentWrapper>
     </Container>
   );
 };

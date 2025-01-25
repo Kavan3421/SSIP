@@ -11,7 +11,7 @@ const Container = styled.div`
 
 const Label = styled.label`
   font-size: 12px;
-  color: ${({ theme }) => theme.text_primary};
+  color: ${({ theme }) => theme.black};
   padding: 0px 4px;
   ${({ error, theme }) =>
     error &&
@@ -26,7 +26,7 @@ const Label = styled.label`
   ${({ popup, theme }) =>
     popup &&
     `
-  color: ${theme.popup_text_secondary};
+  color: ${theme.black};
   `}
 `;
 
@@ -34,7 +34,7 @@ const OutlinedInput = styled.div`
   border-radius: 8px;
   border: 0.5px solid ${({ theme }) => theme.text_secondary};
   background-color: transparent;
-  color: ${({ theme }) => theme.text_primary};
+  color: ${({ theme }) => theme.black};
   outline: none;
   padding: 16px;
   display: flex;
@@ -69,7 +69,7 @@ const OutlinedInput = styled.div`
   ${({ popup, theme }) =>
     popup &&
     `
-  color: ${theme.popup_text_secondary};
+  color: ${theme.black};
   border: 0.5px solid ${theme.popup_text_secondary + 60};
   `}
 `;
@@ -80,7 +80,7 @@ const Input = styled.input`
   outline: none;
   border: none;
   background-color: transparent;
-  color: ${({ theme }) => theme.text_primary};
+  color: ${({ theme }) => theme.black};
   &:focus {
     outline: none;
   }

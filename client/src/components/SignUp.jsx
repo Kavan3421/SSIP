@@ -3,6 +3,9 @@ import styled from "styled-components";
 import TextInput from "./TextInput";
 import Button from "./Button";
 import { registerUser } from "../api";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginSuccess } from "../redux/reducers/userSlice.js";
 
 const Container = styled.div`
   width: 100%;
@@ -22,70 +25,49 @@ const Span = styled.div`
   color: ${({ theme }) => theme.text_secondary + 90};
 `;
 
-const ApplyForRegistration = () => {
+const SignUp = () => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [vehicleNumber, setVehicleNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [photos, setPhotos] = useState([]);
+  const [vehicleNumber, setVehicleNumber] = useState("");
+  const [enrollmentNumber, setEnrollmentNumber] = useState("");
 
   const validateInputs = () => {
-    if (!name || !email || !vehicleNumber || !password || !confirmPassword) {
+    if (!name || !email || !password || !vehicleNumber || !enrollmentNumber) {
       alert("Please fill in all fields");
-      return false;
-    }
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
       return false;
     }
     return true;
   };
 
-  const handleFileChange = (e) => {
-    setPhotos(e.target.files);
-  };
-
-  const handleApply = async () => {
+  const handelSignUp = async () => {
     setLoading(true);
     setButtonDisabled(true);
-
-    if (!validateInputs()) {
-      setLoading(false);
-      setButtonDisabled(false);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("vehicle_number", vehicleNumber);
-    formData.append("password", password);
-    formData.append("confirm_password", confirmPassword);
-    Array.from(photos).forEach((photo) => {
-      formData.append("photos", photo);
-    });
-
-    try {
-      const res = await registerUser(formData);
-      alert(res.data.message || "Registration successful!");
-    } catch (err) {
-      const errorMessage =
-        err.response?.data?.error || "An unexpected error occurred.";
-      alert(errorMessage);
-    } finally {
-      setLoading(false);
-      setButtonDisabled(false);
+    if (validateInputs()) {
+      await registerUser({ name, email, password, vehicleNumber, enrollmentNumber })
+        .then((res) => {
+          dispatch(loginSuccess(res.data));
+          alert("Account Created Successfully");
+          setLoading(false);
+          setButtonDisabled(false);
+        })
+        .catch((err) => {
+          console.error("Error during signup:", err);
+          alert(err.response?.data?.message || "Something went wrong!");
+          setLoading(false);
+          setButtonDisabled(false);
+        });
     }
   };
 
   return (
     <Container>
       <div>
-        <Title>Apply for Registration 🚗</Title>
-        <Span>Please fill in the details below to register your vehicle</Span>
+        <Title>Create New Account 👋</Title>
+        <Span>Please enter details to create a new account</Span>
       </div>
       <div
         style={{
@@ -107,12 +89,6 @@ const ApplyForRegistration = () => {
           handelChange={(e) => setEmail(e.target.value)}
         />
         <TextInput
-          label="Vehicle Number"
-          placeholder="Enter your vehicle number"
-          value={vehicleNumber}
-          handelChange={(e) => setVehicleNumber(e.target.value)}
-        />
-        <TextInput
           label="Password"
           placeholder="Enter your password"
           password
@@ -120,28 +96,20 @@ const ApplyForRegistration = () => {
           handelChange={(e) => setPassword(e.target.value)}
         />
         <TextInput
-          label="Confirm Password"
-          placeholder="Re-enter your password"
-          password
-          value={confirmPassword}
-          handelChange={(e) => setConfirmPassword(e.target.value)}
+          label="Vehicle Number"
+          placeholder="Enter your vehicle number"
+          value={vehicleNumber}
+          handelChange={(e) => setVehicleNumber(e.target.value)}
         />
-        <div>
-          <label
-            style={{
-              fontSize: "16px",
-              fontWeight: "400",
-              marginBottom: "10px",
-              display: "block",
-            }}
-          >
-            Upload Photos
-          </label>
-          <input type="file" multiple onChange={handleFileChange} />
-        </div>
+        <TextInput
+          label="Enrollment Number"
+          placeholder="Enter your enrollment number"
+          value={enrollmentNumber}
+          handelChange={(e) => setEnrollmentNumber(e.target.value)}
+        />
         <Button
-          text="Apply"
-          onClick={handleApply}
+          text="SignUp"
+          onClick={handelSignUp}
           isLoading={loading}
           isDisabled={buttonDisabled}
         />
@@ -150,4 +118,4 @@ const ApplyForRegistration = () => {
   );
 };
 
-export default ApplyForRegistration;
+export default SignUp;

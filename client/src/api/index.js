@@ -1,40 +1,24 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api/", // Adjust to your Flask server URL
+  baseURL: "http://localhost:8080/api/", // Adjust to your Flask server URL
 });
 
 // Register a new user
 export const registerUser = async (data) => {
-  try {
-    const response = await API.post("/user/signup", data);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { message: "An unexpected error occurred." };
-  }
+  console.log(data);
+  const response = await API.post("/user/signup", data);
+  return response;
 };
 
 // Login a user
-export const UserSignIn = async (data) => {
-  try {
-    const response = await API.post("/user/signin", data);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { message: "An unexpected error occurred." };
-  }
-};
+export const UserSignIn = async (data) => API.post("/user/signin", data);
 
 // Get data by date
-export const getDataByDate = async (token, queryString) => {
-  try {
-    const response = await API.get(`/user/databydate${queryString}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { message: "An unexpected error occurred." };
-  }
-};
+export const getDataByDate = async (token, queryString) =>
+  await API.get(`/user/databydate${queryString}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
 // Submit a contact message
 export const contact = async (token, data) => {

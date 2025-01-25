@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getDataByDate } from "../api/index.js";
+import { getDataByDate } from "../api/index.js"; // API call function for fetching data
 import EntryExitCard from "../components/EntryExitCard.jsx";
 
 const Container = styled.div`
@@ -11,42 +11,24 @@ const Container = styled.div`
   padding: 22px 0px;
   overflow-y: scroll;
 `;
-const Wrapper = styled.div`
-  flex: 1;
-  max-width: 1400px;
+
+const Section = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 0px 16px;
   gap: 22px;
   @media (max-width: 600px) {
     gap: 12px;
   }
 `;
+
 const Title = styled.div`
   padding: 0px 16px;
   font-size: 22px;
   color: ${({ theme }) => theme.text_primary};
   font-weight: 500;
 `;
-const FlexWrap = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 22px;
-  padding: 0px 16px;
-  @media (max-width: 600px) {
-    gap: 12px;
-  }
-`;
-const Section = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 0px 16px;
-  gap: 22px;
-  padding: 0px 16px;
-  @media (max-width: 600px) {
-    gap: 12px;
-  }
-`;
+
 const CardWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -60,34 +42,47 @@ const CardWrapper = styled.div`
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
-  const [todaysData, setTodaysData] = useState([]);
+  const [logsByTag, setLogsByTag] = useState({});
 
   const getTodaysData = async () => {
     setLoading(true);
     const token = localStorage.getItem("SurveilEye-app-token");
-    await getDataByDate(token, "").then((res) => {
-      setTodaysData(res?.data?.todaysWorkouts);
+    
+    try {
+      const response = await getDataByDate(token, "");
+      
+      // Correctly parse the logs from the response
+      const logs = response?.logs || {};
+      
+      setLogsByTag(logs);
+    } catch (error) {
+      console.error("Error fetching today's data:", error);
+    } finally {
       setLoading(false);
-    });
+    }
   };
+  
 
   useEffect(() => {
     getTodaysData();
   }, []);
 
-  // const EntryExitData = {
-  //   type: "entry",
-  //   time: 12,
-  // };
-
   return (
     <Container>
       <Section>
-        <Title>Todays Data</Title>
+        <Title>Today's Data</Title>
+        {loading && <p>Loading...</p>}
         <CardWrapper>
-          {todaysData.map((EntryExitData) => (
-            <EntryExitCard EntryExitData={EntryExitData}/>
-          ))}
+          {Object.entries(logsByTag).map(([rfidTag, data]) => {
+            return data.logs.map((log, index) => (
+              <EntryExitCard
+                key={`${rfidTag}-${index}`}
+                rfidTag={rfidTag}
+                type={log.type}
+                time={log.timestamp}
+              />
+            ));
+          })}
         </CardWrapper>
       </Section>
     </Container>

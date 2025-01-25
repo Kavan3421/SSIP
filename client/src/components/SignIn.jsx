@@ -12,16 +12,17 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 36px;
+  
 `;
 const Title = styled.div`
   font-size: 30px;
   font-weight: 800;
-  color: ${({ theme }) => theme.text_primary};
+  color: ${({ theme }) => theme.black};
 `;
 const Span = styled.div`
   font-size: 16px;
   font-weight: 400;
-  color: ${({ theme }) => theme.text_secondary + 90};
+  color: ${({ theme }) => theme.black};
 `;
 
 const SignIn = () => {
@@ -43,25 +44,32 @@ const SignIn = () => {
     setLoading(true);
     setButtonDisabled(true);
 
-    if (!validateInputs()) {
-      setLoading(false);
-      setButtonDisabled(false);
-      return;
-    }
-
-    try {
-      const res = await UserSignIn({ email, password }); // Adjusted the function name for consistency.
-      dispatch(loginSuccess(res.data)); // Assumes `res.data` includes user details.
-      alert("Login Successful");
-    } catch (err) {
-      const errorMessage =
-        err.response?.data?.error || "An unexpected error occurred.";
-      alert(errorMessage);
-    } finally {
+    if (validateInputs()) {
+      try {
+        const res = await UserSignIn({ email, password });
+        
+        // Ensure correct response structure
+        if (res.data && res.data.token && res.data.user) {
+          dispatch(loginSuccess(res.data));
+          alert("Login Success");
+        } else {
+          alert("Unexpected response structure");
+        }
+      } catch (err) {
+        console.error(err);
+        const errorMessage = err.response?.data?.message || "An unexpected error occurred.";
+        alert(errorMessage);
+      } finally {
+        setLoading(false);
+        setButtonDisabled(false);
+      }
+    } else {
+      alert("Please ensure all fields are correctly filled.");
       setLoading(false);
       setButtonDisabled(false);
     }
   };
+
 
   return (
     <Container>

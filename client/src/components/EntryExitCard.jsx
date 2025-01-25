@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const CardWrapper = styled.div`
   background: ${({ theme }) => theme.card};
@@ -8,16 +8,17 @@ const CardWrapper = styled.div`
   border-radius: 8px;
   box-shadow: 0px 4px 6px ${({ theme }) => theme.shadow};
   text-align: center;
+  min-width: 250px;
 `;
 
-const Title = styled.h2`
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+const RfidTag = styled.div`
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
   color: ${({ theme }) => theme.text_primary};
 `;
 
 const Type = styled.div`
-  font-size: 3rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: ${({ theme }) => theme.primary};
 `;
@@ -28,11 +29,11 @@ const Timestamp = styled.div`
   color: ${({ theme }) => theme.text_secondary};
 `;
 
-const EntryExitCard = ({ EntryExitData }) => (
+const EntryExitCard = ({ rfidTag, type, time }) => (
   <CardWrapper>
-    <Title>Entry/Exit:</Title>
-    <Type>{EntryExitData.type}</Type>
-    <Timestamp>Time: {EntryExitData.time}</Timestamp>
+    <RfidTag>RFID Tag: {rfidTag}</RfidTag>
+    <Type>{type === "entry" ? "Entry" : "Exit"}</Type>
+    <Timestamp>Time: {time}</Timestamp>
   </CardWrapper>
 );
 

@@ -16,9 +16,10 @@ const UserSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    photos: {
-      type: [String], // Array of file paths or URLs
-      default: [],
+    enrollmentNumber: {
+      type: Number,
+      required: true,
+      unique: true,
     },
     password: {
       type: String,

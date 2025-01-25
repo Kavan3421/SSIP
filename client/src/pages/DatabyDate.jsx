@@ -80,17 +80,25 @@ const CardWrapper = styled.div`
 const DatabyDate = () => {
   const [date, setDate] = useState("");
   const [loading, setLoading] = useState(false);
-  const [todaysData, setTodaysData] = useState([]);
+  const [logsByTag, setLogsByTag] = useState({});
 
-  const getTodaysData = async (otherUsers = false) => {
+  const getTodaysData = async () => {
     setLoading(true);
     const token = localStorage.getItem("SurveilEye-app-token");
-    const queryString = date ? `?date=${date}&otherUsers=${otherUsers}` : "";
+
+    const queryString = date ? `?date=${date}` : "";
+    console.log(queryString);
     try {
-      const res = await getDataByDate(token, queryString);
-      setTodaysData(res?.data?.todaysWorkouts);
-    } catch (err) {
-      console.error("Error fetching Data:", err.response || err.message);
+      const response = await getDataByDate(token, queryString);
+      console.log("Raw API Response:", response);
+
+      // Correctly parse the logs from the response
+      const logs = response?.logs || {};
+      console.log("Parsed Logs:", logs);
+
+      setLogsByTag(response?.data?.logs);
+    } catch (error) {
+      console.error("Error fetching today's data:", error);
     } finally {
       setLoading(false);
     }
@@ -99,7 +107,6 @@ const DatabyDate = () => {
   useEffect(() => {
     getTodaysData();
   }, [date]);
-
   return (
     <Container>
       <Wrapper>
@@ -118,9 +125,16 @@ const DatabyDate = () => {
               <CircularProgress />
             ) : (
               <CardWrapper>
-                {todaysData.map((EntryExitData) => (
-                  <EntryExitCard EntryExitData={EntryExitData} />
-                ))}
+                {Object.entries(logsByTag).map(([rfidTag, data]) => {
+                  return data.logs.map((log, index) => (
+                    <EntryExitCard
+                      key={`${rfidTag}-${index}`}
+                      rfidTag={rfidTag}
+                      type={log.type}
+                      time={log.timestamp}
+                    />
+                  ));
+                })}
               </CardWrapper>
             )}
           </Section>
