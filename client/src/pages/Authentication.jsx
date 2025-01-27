@@ -6,7 +6,7 @@ import SignIn from "../components/SignIn";
 import SignUp from "../components/SignUp";
 
 const Container = styled.div`
-  min-height: 100vh; /* Ensure the background covers the entire viewport height */
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,6 +16,7 @@ const Container = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   position: relative;
+  padding: 16px; /* Add padding for smaller screens */
 `;
 
 const Overlay = styled.div`
@@ -24,7 +25,7 @@ const Overlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(222, 222, 222, 0.5); /* Light overlay */
+  background: rgba(192, 192, 192, 0.5);
   z-index: 1;
 `;
 
@@ -32,7 +33,7 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: flex-start; /* Align content to the top */
+  align-items: flex-start;
   backdrop-filter: blur(10px);
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -41,8 +42,14 @@ const ContentWrapper = styled.div`
   gap: 32px;
   width: 100%;
   max-width: 900px;
-  max-height: 90vh; /* Avoid overflow */
-  overflow-y: auto; /* Enable scrolling */
+  max-height: 90vh;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 24px;
+    gap: 16px;
+  }
 `;
 
 const Left = styled.div`
@@ -51,11 +58,25 @@ const Left = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 768px) {
+    flex: none;
+    width: 100%;
+    margin-bottom: 16px;
+  }
 `;
 
 const Logo = styled.img`
   width: 250px;
   z-index: 10;
+
+  @media (max-width: 768px) {
+    width: 200px;
+  }
+
+  @media (max-width: 400px) {
+    width: 150px;
+  }
 `;
 
 const Right = styled.div`
@@ -63,11 +84,15 @@ const Right = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Align items to the top */
+  justify-content: flex-start;
   gap: 16px;
   width: 100%;
-  overflow-y: auto; /* Allow scrolling for content overflow */
-  padding-top: 20px; /* Prevent content from being cut off at the top */
+  overflow-y: auto;
+  padding-top: 20px;
+
+  @media (max-width: 768px) {
+    padding-top: 0;
+  }
 `;
 
 const Text = styled.div`
@@ -75,6 +100,7 @@ const Text = styled.div`
   text-align: center;
   color: ${({ theme }) => theme.white};
   margin-top: 16px;
+
   @media (max-width: 400px) {
     font-size: 14px;
   }
@@ -85,6 +111,10 @@ const TextButton = styled.span`
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const Authentication = () => {

@@ -6,7 +6,7 @@ import Navbar from "./components/Navbar";
 import styled from "styled-components";
 import Dashboard from "./pages/Dashboard";
 import Contact from "./pages/Contact";
-import ProfileUpdate from "./pages/ProfileUpdate.jsx";
+import Profile from "./pages/Profile.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DatabyDate from "./pages/DatabyDate";
 import Authentication from "./pages/Authentication.jsx";
@@ -35,7 +35,7 @@ function App() {
             <Route path="/" exact element={<Dashboard />} />
             <Route path="/databydate" exact element={<DatabyDate />} />
             <Route path="/contact" exact element={<Contact />} />
-            <Route path="/profile" exact element={<ProfileUpdate />} />
+            <Route path="/profile" exact element={<Profile />} />
           </Routes>
         </Container>
          ) : (
