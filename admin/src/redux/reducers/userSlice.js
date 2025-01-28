@@ -5,11 +5,11 @@ const initialState = {
 };
 
 export const userSlice = createSlice({
-  name: "user",
+  name: "admin",
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      state.currentUser = action.payload.user;
+      state.currentUser = action.payload.admin;
       localStorage.setItem("SurveilEye-app-token", action.payload.token);
     },
     logout: (state) => {

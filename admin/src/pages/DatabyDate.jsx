@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateCalendar } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CircularProgress } from "@mui/material";
 import EntryExitCard from "../components/EntryExitCard";
+import { getDataByDate } from "../api";
 
 const Container = styled.div`
   flex: 1;
@@ -79,13 +80,33 @@ const CardWrapper = styled.div`
 const DatabyDate = () => {
   const [date, setDate] = useState("");
   const [loading, setLoading] = useState(false);
-  const EntryExitData = {
-    type: "entry",
-    name: "xyz",
-    enroll: "12202080701052",
-    time: 12,
+  const [logsByTag, setLogsByTag] = useState({});
+
+  const getTodaysData = async () => {
+    setLoading(true);
+    const token = localStorage.getItem("SurveilEye-app-token");
+
+    const queryString = date ? `?date=${date}` : "";
+    console.log(queryString);
+    try {
+      const response = await getDataByDate(token, queryString);
+      console.log("Raw API Response:", response);
+
+      // Correctly parse the logs from the response
+      const logs = response?.logs || {};
+      console.log("Parsed Logs:", logs);
+
+      setLogsByTag(response?.data?.logs);
+    } catch (error) {
+      console.error("Error fetching today's data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    getTodaysData();
+  }, [date]);
   return (
     <Container>
       <Wrapper>
@@ -98,22 +119,26 @@ const DatabyDate = () => {
           </LocalizationProvider>
         </Left>
         <Right>
-        <Section>
-          <SecTitle>Data</SecTitle>
-          {/* {loading ? (
-            <CircularProgress />
-          ) : ( */}
-            <CardWrapper>
-              {/* {todaysWorkouts.map((workout) => ( */}
-                <EntryExitCard EntryExitData={EntryExitData}/>
-                <EntryExitCard EntryExitData={EntryExitData}/>
-                <EntryExitCard EntryExitData={EntryExitData}/>
-                <EntryExitCard EntryExitData={EntryExitData}/>
-                <EntryExitCard EntryExitData={EntryExitData}/>
-              {/* ))} */}
-            </CardWrapper>
-          {/* )} */}
-        </Section>
+          <Section>
+            <SecTitle>Data</SecTitle>
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <CardWrapper>
+                {Object.entries(logsByTag).map(([rfidTag, data]) => {
+                  return data.logs.map((log, index) => (
+                    <EntryExitCard
+                      key={`${rfidTag}-${index}`}
+                      type={log.type}
+                      time={log.timestamp}
+                      enrollment={log.enrollmentNumber}
+                      name={log.name}
+                    />
+                  ));
+                })}
+              </CardWrapper>
+            )}
+          </Section>
         </Right>
       </Wrapper>
     </Container>

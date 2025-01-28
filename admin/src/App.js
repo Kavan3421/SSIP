@@ -4,13 +4,11 @@ import { lightTheme } from "./utils/Themes.js";
 import { useSelector } from "react-redux";
 import Navbar from "./components/Navbar";
 import styled from "styled-components";
-// import Authentication from "./pages/Authentication";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ContactEmergency } from "@mui/icons-material";
 import DatabyDate from "./pages/DatabyDate";
-import Request from "./pages/Request.jsx";
-import Livefeed from "./pages/Livefeed.jsx";
+import Authentication from "./pages/Authentication.jsx";
 
 const Container = styled.div`
   width: 100%;
@@ -29,21 +27,20 @@ function App() {
   return (
     <ThemeProvider theme={lightTheme}>
       <BrowserRouter>
-        {/* {currentUser ? ( */}
+        {currentUser ? (
         <Container>
           <Navbar />
           <Routes>
             <Route path="/" exact element={<Dashboard />} />
             <Route path="/databydate" exact element={<DatabyDate />} />
-            <Route path="/requests" exact element={<Request/>} />
-            <Route path="/livefeed" exact element={<Livefeed/>} />
+            <Route path="/profile" exact element={<Profile />} />
           </Routes>
         </Container>
-        {/* ) : (
+         ) : (
           <Container>
             <Authentication />
           </Container>
-        )} */}
+        )}
         <footer class="footer">
           <p>Created By Team SurveilEye</p>
         </footer>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import TextInput from "./TextInput.jsx";
 import Button from "./Button.jsx";
-import { UserSignIn } from "../api/index.js";
+import { AdminSignIn } from "../api/index.js";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/reducers/userSlice.js";
 
@@ -12,16 +12,17 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 36px;
+  
 `;
 const Title = styled.div`
   font-size: 30px;
   font-weight: 800;
-  color: ${({ theme }) => theme.text_primary};
+  color: ${({ theme }) => theme.black};
 `;
 const Span = styled.div`
   font-size: 16px;
   font-weight: 400;
-  color: ${({ theme }) => theme.text_secondary + 90};
+  color: ${({ theme }) => theme.black};
 `;
 
 const SignIn = () => {
@@ -39,16 +40,24 @@ const SignIn = () => {
     return true;
   };
 
-  const handelSignIn = async () => {
+  const handleSignIn = async () => {
     setLoading(true);
     setButtonDisabled(true);
-  
+
     if (validateInputs()) {
       try {
-        const res = await UserSignIn({ email, password });
-        dispatch(loginSuccess(res.data));
-        alert("Login Success");
+        const res = await AdminSignIn({ email, password });
+        console.log(res);
+        
+        // Ensure correct response structure
+        if (res.data && res.data.token && res.data.admin) {
+          dispatch(loginSuccess(res.data));
+          alert("Login Success");
+        } else {
+          alert("Unexpected response structure");
+        }
       } catch (err) {
+        console.error(err);
         const errorMessage = err.response?.data?.message || "An unexpected error occurred.";
         alert(errorMessage);
       } finally {
@@ -61,13 +70,13 @@ const SignIn = () => {
       setButtonDisabled(false);
     }
   };
-  
+
 
   return (
     <Container>
       <div>
-        <Title>Welcome to LionFit</Title>
-        <Span>Please login with your details here</Span>
+        <Title>Vehicle Security Admin Login</Title>
+        <Span>Please log in with your registered email and password</Span>
       </div>
       <div
         style={{
@@ -91,8 +100,8 @@ const SignIn = () => {
         />
       </div>
       <Button
-        text="SignIn"
-        onClick={handelSignIn}
+        text="Sign In"
+        onClick={handleSignIn}
         isLoading={loading}
         isDisabled={buttonDisabled}
       />

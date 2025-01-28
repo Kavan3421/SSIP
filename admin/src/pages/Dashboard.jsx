@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { counts } from "../utils/data.js";
-import { addWorkout, getDashboardDetails, getWorkouts } from "../api/index.js";
+import { getDataByDate } from "../api/index.js"; // API call function for fetching data
 import EntryExitCard from "../components/EntryExitCard.jsx";
+import io from "socket.io-client";
 
 const Container = styled.div`
   flex: 1;
@@ -12,42 +12,24 @@ const Container = styled.div`
   padding: 22px 0px;
   overflow-y: scroll;
 `;
-const Wrapper = styled.div`
-  flex: 1;
-  max-width: 1400px;
+
+const Section = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 0px 16px;
   gap: 22px;
   @media (max-width: 600px) {
     gap: 12px;
   }
 `;
+
 const Title = styled.div`
   padding: 0px 16px;
   font-size: 22px;
   color: ${({ theme }) => theme.text_primary};
   font-weight: 500;
 `;
-const FlexWrap = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 22px;
-  padding: 0px 16px;
-  @media (max-width: 600px) {
-    gap: 12px;
-  }
-`;
-const Section = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 0px 16px;
-  gap: 22px;
-  padding: 0px 16px;
-  @media (max-width: 600px) {
-    gap: 12px;
-  }
-`;
+
 const CardWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -61,36 +43,69 @@ const CardWrapper = styled.div`
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState();
-  const [buttonLoading, setButtonLoading] = useState(false);
+  const [logsByTag, setLogsByTag] = useState({});
+  const [socket, setSocket] = useState(null);
 
-  const dashboardData = async () => {
+  // Function to fetch today's data
+  const getTodaysData = async () => {
     setLoading(true);
     const token = localStorage.getItem("SurveilEye-app-token");
-    await getDashboardDetails(token).then((res) => {
-      setData(res.data);
+
+    try {
+      const response = await getDataByDate(token, "");
+      const logs = response?.logs || {};
+      setLogsByTag(logs);
+    } catch (error) {
+      console.error("Error fetching today's data:", error);
+    } finally {
       setLoading(false);
-    });
+    }
   };
 
-  const EntryExitData = {
-    type: "entry",
-    name: "xyz",
-    enroll: "12202080701052",
-    time: 12,
-  };
+  // Initialize Socket.IO and handle real-time updates
+  useEffect(() => {
+    const newSocket = io("http://localhost:8080");
+    setSocket(newSocket);
+
+    // Listen for entry log updates
+    newSocket.on("entryLogUpdated", () => {
+      console.log("New entry log detected. Fetching updated data...");
+      getTodaysData(); // Refresh data
+    });
+
+    // Listen for exit log updates
+    newSocket.on("exitLogUpdated", () => {
+      console.log("New exit log detected. Fetching updated data...");
+      getTodaysData(); // Refresh data
+    });
+
+    return () => {
+      newSocket.disconnect(); // Clean up the socket connection
+    };
+  }, []);
+
+  // Fetch data on component mount
+  useEffect(() => {
+    getTodaysData();
+  }, []);
 
   return (
     <Container>
       <Section>
-        <Title>Todays Data</Title>
+        <Title>Today's Data</Title>
+        {loading && <p>Loading...</p>}
         <CardWrapper>
-          <EntryExitCard EntryExitData={EntryExitData} />
-          <EntryExitCard EntryExitData={EntryExitData} />
-          <EntryExitCard EntryExitData={EntryExitData} />
-          <EntryExitCard EntryExitData={EntryExitData} />
-          <EntryExitCard EntryExitData={EntryExitData} />
-          <EntryExitCard EntryExitData={EntryExitData} />
+          {Object.entries(logsByTag).map(([rfidTag, data]) =>
+            data.logs.map((log, index) => (
+              <EntryExitCard
+                key={`${rfidTag}-${index}`}
+                type={log.type}
+                time={log.timestamp}
+                enrollment={log.enrollmentNumber}
+                name={log.name}
+              />
+            ))
+          )}
         </CardWrapper>
       </Section>
     </Container>

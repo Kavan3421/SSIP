@@ -19,11 +19,12 @@
     "react-router-dom": "^7.1.0",
     "react-scripts": "5.0.1",
     "redux-persist": "^6.0.0",
+    "socket.io-client": "^4.8.1",
     "styled-components": "^6.1.14",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "cross-env HTTPS=true SSL_CRT_FILE=cert.pem SSL_KEY_FILE=key.pem react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -45,8 +46,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "cross-env": "^7.0.3"
   }
 }

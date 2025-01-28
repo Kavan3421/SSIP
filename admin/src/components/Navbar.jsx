@@ -142,17 +142,15 @@ const Navbar = ({ currentUser }) => {
         </NavLogo>
 
         <MobileMenu isOpen={isOpen}>
-          <Navlink to="/">Dashboard</Navlink>
-          <Navlink to="/databydate">History</Navlink>
-          <Navlink to="/requests">Requests</Navlink>
-          <Navlink to="/livefeed">Live Feed</Navlink>
+          <Navlink to="/">Live logs</Navlink>
+          <Navlink to="/databydate">History of logs</Navlink>
+          <Navlink to="/profile">Profile</Navlink>
         </MobileMenu>
 
         <NavItems>
-          <Navlink to="/">Dashboard</Navlink>
-          <Navlink to="/databydate">History</Navlink>
-          <Navlink to="/requests">Requests</Navlink>
-          <Navlink to="/livefeed">Live Feed</Navlink>
+          <Navlink to="/">Live logs</Navlink>
+          <Navlink to="/databydate">History of logs</Navlink>
+          <Navlink to="/profile">Profile</Navlink>
         </NavItems>
 
         <UserContainer>

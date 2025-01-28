@@ -1,23 +1,14 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8080/api/",
+  baseURL: "http://localhost:8080/api/", // Adjust to your Flask server URL
 });
 
-export const UserSignUp = async (data) => API.post("/user/signup", data);
-export const UserSignIn = async (data) => API.post("/user/signin", data);
+// Login a user
+export const AdminSignIn = async (data) => API.post("/admin/signin", data);
 
-export const getDashboardDetails = async (token) =>
-  API.get("/user/dashboard", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-export const getWorkouts = async (token, queryString) =>
-  await API.get(`/user/databydate${queryString}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });   
-
-export const contact = async (token, data) =>
-  await API.post('/user/contact', data, {
+// Get data by date
+export const getDataByDate = async (token, queryString) =>
+  await API.get(`/admin/databydate${queryString}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
