@@ -58,15 +58,21 @@ export const getCardByDate = async (req, res, next) => {
     console.log(date);
 
     // Define the start and end of the day
+    // const startOfDay = new Date(
+    //   date.getFullYear(),
+    //   date.getMonth(),
+    //   date.getDate()
+    // );
+    // const endOfDay = new Date(
+    //   date.getFullYear(),
+    //   date.getMonth(),
+    //   date.getDate() + 1
+    // );
     const startOfDay = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate()
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
     );
     const endOfDay = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate() + 1
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() + 1)
     );
 
     // Access the database and collections
@@ -81,7 +87,7 @@ export const getCardByDate = async (req, res, next) => {
     const exitLogs = await exitCollection
       .find({ timestamp: { $gte: startOfDay, $lt: endOfDay } })
       .toArray();
-
+      
     // Check if logs are found
     if (!entryLogs.length && !exitLogs.length) {
       return res
@@ -112,7 +118,7 @@ export const getCardByDate = async (req, res, next) => {
         second: "2-digit",
       });
 
-      const user = await usersCollection.findOne({ rfid_tag });      
+      const user = await usersCollection.findOne({ rfid_tag });
       const enrollmentNumber = user ? user.enrollmentNumber : "Unknown";
       const name = user ? user.name : "Unknown";
 
@@ -120,7 +126,12 @@ export const getCardByDate = async (req, res, next) => {
       if (!logsByTag[rfid_tag]) {
         logsByTag[rfid_tag] = { logs: [] };
       }
-      logsByTag[rfid_tag].logs.push({ type,enrollmentNumber, name, timestamp: formattedTimestamp });
+      logsByTag[rfid_tag].logs.push({
+        type,
+        enrollmentNumber,
+        name,
+        timestamp: formattedTimestamp,
+      });
     }
 
     // Respond with the grouped logs

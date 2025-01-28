@@ -53,8 +53,7 @@ const Dashboard = () => {
 
     try {
       const response = await getDataByDate(token, "");
-      const logs = response?.logs || {};
-      setLogsByTag(logs);
+      setLogsByTag(response?.data?.logs);
     } catch (error) {
       console.error("Error fetching today's data:", error);
     } finally {
