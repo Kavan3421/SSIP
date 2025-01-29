@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getDataByDate } from "../api/index.js"; // API call function for fetching data
 import EntryExitCard from "../components/EntryExitCard.jsx";
+import io from "socket.io-client";
 
 const Container = styled.div`
   flex: 1;
@@ -43,17 +44,15 @@ const CardWrapper = styled.div`
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [logsByTag, setLogsByTag] = useState({});
+  const [socket, setSocket] = useState(null);
 
+  // Function to fetch today's data
   const getTodaysData = async () => {
     setLoading(true);
     const token = localStorage.getItem("SurveilEye-app-token");
-    
+
     try {
       const response = await getDataByDate(token, "");
-      
-      // Correctly parse the logs from the response
-      const logs = response?.logs || {};
-      
       setLogsByTag(response?.data?.logs);
     } catch (error) {
       console.error("Error fetching today's data:", error);
@@ -61,6 +60,33 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+
+  // Initialize Socket.IO and handle real-time updates
+  useEffect(() => {
+    const newSocket = io("http://localhost:8080");
+    setSocket(newSocket);
+
+    // Listen for entry log updates
+    newSocket.on("entryLogUpdated", () => {
+      console.log("New entry log detected. Fetching updated data...");
+      getTodaysData(); // Refresh data
+    });
+
+    // Listen for exit log updates
+    newSocket.on("exitLogUpdated", () => {
+      console.log("New exit log detected. Fetching updated data...");
+      getTodaysData(); // Refresh data
+    });
+
+    return () => {
+      newSocket.disconnect(); // Clean up the socket connection
+    };
+  }, []);
+
+  // Fetch data on component mount
+  useEffect(() => {
+    getTodaysData();
+  }, []);
   
 
   useEffect(() => {

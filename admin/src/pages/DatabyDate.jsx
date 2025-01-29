@@ -84,6 +84,7 @@ const DatabyDate = () => {
 
   const getTodaysData = async () => {
     setLoading(true);
+    setLogsByTag({});
     const token = localStorage.getItem("SurveilEye-app-token");
 
     const queryString = date ? `?date=${date}` : "";
@@ -92,11 +93,7 @@ const DatabyDate = () => {
       const response = await getDataByDate(token, queryString);
       console.log("Raw API Response:", response);
 
-      // Correctly parse the logs from the response
-      const logs = response?.logs || {};
-      console.log("Parsed Logs:", logs);
-
-      setLogsByTag(response?.data?.logs);
+      setLogsByTag(response?.data?.logs || {});
     } catch (error) {
       console.error("Error fetching today's data:", error);
     } finally {

@@ -31,7 +31,7 @@ const NavContainer = styled.div`
   font-size: 1rem;
 `;
 const NavLogo = styled(LinkR)`
-  width: 100%;
+  width: 20%;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -54,7 +54,7 @@ const Mobileicon = styled.div`
 `;
 
 const NavItems = styled.ul`
-  width: 100%;
+  width: 60%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,7 +84,7 @@ const Navlink = styled(NavLink)`
 `;
 
 const UserContainer = styled.div`
-  width: 100%;
+  width: 20%;
   height: 100%;
   display: flex;
   justify-content: flex-end;
@@ -145,6 +145,7 @@ const Navbar = ({ currentUser }) => {
           <Navlink to="/">Dashboard</Navlink>
           <Navlink to="/databydate">My History</Navlink>
           <Navlink to="/contact">Contact Us</Navlink>
+          <Navlink to="/gatepass">Gatepass</Navlink>
           <Navlink to="/profile">Profile</Navlink>
         </MobileMenu>
 
@@ -152,6 +153,7 @@ const Navbar = ({ currentUser }) => {
           <Navlink to="/">Dashboard</Navlink>
           <Navlink to="/databydate">My History</Navlink>
           <Navlink to="/contact">Contact Us</Navlink>
+          <Navlink to="/gatepass">Gatepass</Navlink>
           <Navlink to="/profile">Profile</Navlink>
         </NavItems>
 

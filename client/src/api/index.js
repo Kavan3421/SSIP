@@ -31,3 +31,14 @@ export const contact = async (token, data) => {
     throw error.response?.data || { message: "An unexpected error occurred." };
   }
 };
+
+export const gatepass = async (token, data) => {
+  try {
+    const response = await API.post("/user/gatepass", data, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "An unexpected error occurred." };
+  }
+};

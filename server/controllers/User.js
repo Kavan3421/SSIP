@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { createError } from "../error.js";
 import User from "../models/User.js";
 import Feedback from "../models/Feedback.js";
+import Gatepass from "../models/Gatepass.js";
 import mongoose from "mongoose";
 
 dotenv.config();
@@ -84,15 +85,22 @@ export const getCardByDate = async (req, res, next) => {
     const date = req.query.date ? new Date(req.query.date) : new Date();
     console.log(date);
 
+    // const startOfDay = new Date(
+    //   date.getFullYear(),
+    //   date.getMonth(),
+    //   date.getDate()
+    // );
+    // const endOfDay = new Date(
+    //   date.getFullYear(),
+    //   date.getMonth(),
+    //   date.getDate() + 1
+    // );
+
     const startOfDay = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate()
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
     );
     const endOfDay = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate() + 1
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() + 1)
     );
 
     const db = mongoose.connection.db;
@@ -104,7 +112,6 @@ export const getCardByDate = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized user." });
     }
     const currentRfidTag = req.user.rfid_tag;
-    console.log(currentRfidTag)
 
     const entryLogs = await entryCollection
       .find({ timestamp: { $gte: startOfDay, $lt: endOfDay } })
@@ -175,6 +182,38 @@ export const ContactMessage = async (req, res, next) => {
 
     return res.status(201).json({
       message: "Your message has been submitted successfully.",
+      contact: savedMessage,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const gatePass = async (req, res, next) => {
+  try {
+    const { reason, time } = req.body;
+
+    if (!reason || !time ) {
+      return next(createError(400, "All fields are required."));
+    }
+
+    const currentUser = req.user;
+    const name = currentUser.name;
+    const enrollmentNumber = currentUser.enrollmentNumber;
+    const rfid_tag = currentUser.rfid_tag;
+
+    const gatepass = new Gatepass({
+      name,
+      enrollmentNumber,
+      rfid_tag,
+      reason,
+      time,
+    });
+
+    const savedMessage = await gatepass.save();
+
+    return res.status(201).json({
+      message: "Your reason has been submitted successfully.",
       contact: savedMessage,
     });
   } catch (err) {
