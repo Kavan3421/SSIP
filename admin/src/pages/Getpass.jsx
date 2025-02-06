@@ -4,7 +4,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateCalendar } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CircularProgress } from "@mui/material";
-import PassCard from "../components/PassCard"
 import { getPassByDate } from "../api";
 
 const Container = styled.div`
@@ -15,6 +14,7 @@ const Container = styled.div`
   padding: 22px 0px;
   overflow-y: scroll;
 `;
+
 const Wrapper = styled.div`
   flex: 1;
   max-width: 1600px;
@@ -49,6 +49,12 @@ const Title = styled.div`
   }
 `;
 
+const SecTitle = styled.div`
+  font-size: 22px;
+  color: ${({ theme }) => theme.text_primary};
+  font-weight: 500;
+`;
+
 const Section = styled.div`
   display: flex;
   flex-direction: column;
@@ -59,21 +65,23 @@ const Section = styled.div`
   }
 `;
 
-const SecTitle = styled.div`
-  font-size: 22px;
-  color: ${({ theme }) => theme.text_primary};
-  font-weight: 500;
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
 `;
 
-const CardWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 100px;
-  @media (max-width: 600px) {
-    gap: 12px;
-  }
+const Th = styled.th`
+  background: ${({ theme }) => theme.primary};
+  color: white;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid ${({ theme }) => theme.shadow};
+`;
+
+const Td = styled.td`
+  padding: 10px;
+  border: 1px solid ${({ theme }) => theme.shadow};
 `;
 
 const PassbyDate = () => {
@@ -97,7 +105,9 @@ const PassbyDate = () => {
   };
 
   useEffect(() => {
-    fetchLogsByDate();
+    if (date) {
+      fetchLogsByDate();
+    }
   }, [date]);
 
   return (
@@ -117,19 +127,28 @@ const PassbyDate = () => {
             {loading ? (
               <CircularProgress />
             ) : (
-              <CardWrapper>
-                {Object.entries(logsByTag).map(([rfidTag, data]) => (
-                  data.logs.map((log, index) => (
-                    <PassCard
-                      key={`${rfidTag}-${index}`}
-                      reason={log.reason}
-                      time={log.time}
-                      enrollment={log.enrollmentNumber}
-                      name={log.name}
-                    />
-                  ))
-                ))}
-              </CardWrapper>
+              <Table>
+                <thead>
+                  <tr>
+                    <Th>Enrollment No.</Th>
+                    <Th>Name</Th>
+                    <Th>Time</Th>
+                    <Th>Reason</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(logsByTag).map(([rfidTag, data]) =>
+                    data.logs.map((log, index) => (
+                      <tr key={`${rfidTag}-${index}`}>
+                        <Td>{log.enrollmentNumber}</Td>
+                        <Td>{log.name}</Td>
+                        <Td>{log.time}</Td>
+                        <Td>{log.reason}</Td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </Table>
             )}
           </Section>
         </Right>

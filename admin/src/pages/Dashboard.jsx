@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getDataByDate } from "../api/index.js"; // API call function for fetching data
-import EntryExitCard from "../components/EntryExitCard.jsx";
 import io from "socket.io-client";
 
 const Container = styled.div`
@@ -18,6 +17,7 @@ const Section = styled.div`
   flex-direction: column;
   padding: 0px 16px;
   gap: 22px;
+  padding: 0px 16px;
   @media (max-width: 600px) {
     gap: 12px;
   }
@@ -30,15 +30,23 @@ const Title = styled.div`
   font-weight: 500;
 `;
 
-const CardWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 100px;
-  @media (max-width: 600px) {
-    gap: 12px;
-  }
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+`;
+
+const Th = styled.th`
+  background: ${({ theme }) => theme.primary};
+  color: white;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid ${({ theme }) => theme.shadow};
+`;
+
+const Td = styled.td`
+  padding: 10px;
+  border: 1px solid ${({ theme }) => theme.shadow};
 `;
 
 const Dashboard = () => {
@@ -93,19 +101,28 @@ const Dashboard = () => {
       <Section>
         <Title>Today's Data</Title>
         {loading && <p>Loading...</p>}
-        <CardWrapper>
-          {Object.entries(logsByTag).map(([rfidTag, data]) =>
-            data.logs.map((log, index) => (
-              <EntryExitCard
-                key={`${rfidTag}-${index}`}
-                type={log.type}
-                time={log.timestamp}
-                enrollment={log.enrollmentNumber}
-                name={log.name}
-              />
-            ))
-          )}
-        </CardWrapper>
+        <Table>
+          <thead>
+            <tr>
+              <Th>Enrollment No.</Th>
+              <Th>Name</Th>
+              <Th>Type</Th>
+              <Th>Time</Th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(logsByTag).map(([rfidTag, data]) =>
+              data.logs.map((log, index) => (
+                <tr key={`${rfidTag}-${index}`}>
+                  <Td>{log.enrollmentNumber}</Td>
+                  <Td>{log.name}</Td>
+                  <Td>{log.type}</Td>
+                  <Td>{log.timestamp}</Td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </Table>
       </Section>
     </Container>
   );
