@@ -8,21 +8,32 @@ import { loginSuccess } from "../redux/reducers/userSlice.js";
 
 const Container = styled.div`
   width: 100%;
-  max-width: 500px;
+  max-width: 420px;
+  background: rgb(211, 211, 211);
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 36px;
-  
+  gap: 20px;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+
+  @media (max-width: 600px) {
+    width: 90%;
+    padding: 24px;
+  }
 `;
-const Title = styled.div`
-  font-size: 30px;
-  font-weight: 800;
-  color: ${({ theme }) => theme.black};
+
+const Title = styled.h2`
+  font-size: 26px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.primary};
 `;
-const Span = styled.div`
-  font-size: 16px;
-  font-weight: 400;
-  color: ${({ theme }) => theme.black};
+
+const Span = styled.p`
+  font-size: 14px;
+  color: ${({ theme }) => theme.text_secondary};
 `;
 
 const SignIn = () => {
@@ -47,58 +58,45 @@ const SignIn = () => {
     if (validateInputs()) {
       try {
         const res = await AdminSignIn({ email, password });
-        console.log(res);
-        
-        // Ensure correct response structure
-        if (res.data && res.data.token && res.data.admin) {
+
+        if (res.data?.token && res.data?.admin) {
           dispatch(loginSuccess(res.data));
-          alert("Login Success");
+          alert("Login Successful!");
         } else {
           alert("Unexpected response structure");
         }
       } catch (err) {
         console.error(err);
-        const errorMessage = err.response?.data?.message || "An unexpected error occurred.";
-        alert(errorMessage);
+        alert(err.response?.data?.message || "An unexpected error occurred.");
       } finally {
         setLoading(false);
         setButtonDisabled(false);
       }
     } else {
-      alert("Please ensure all fields are correctly filled.");
       setLoading(false);
       setButtonDisabled(false);
     }
   };
 
-
   return (
     <Container>
-      <div>
-        <Title>Vehicle Security Admin Login</Title>
-        <Span>Please log in with your registered email and password</Span>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          gap: "20px",
-          flexDirection: "column",
-        }}
-      >
-        <TextInput
-          label="Email Address"
-          placeholder="Enter your email address"
-          value={email}
-          handelChange={(e) => setEmail(e.target.value)}
-        />
-        <TextInput
-          label="Password"
-          placeholder="Enter your password"
-          password
-          value={password}
-          handelChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
+      <Title>Vehicle Security Admin Login</Title>
+      <Span>Log in with your registered email and password</Span>
+
+      <TextInput
+        label="Email Address"
+        placeholder="Enter your email"
+        value={email}
+        handelChange={(e) => setEmail(e.target.value)}
+      />
+      <TextInput
+        label="Password"
+        placeholder="Enter your password"
+        password
+        value={password}
+        handelChange={(e) => setPassword(e.target.value)}
+      />
+
       <Button
         text="Sign In"
         onClick={handleSignIn}
