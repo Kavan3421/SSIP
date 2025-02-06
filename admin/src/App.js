@@ -9,6 +9,7 @@ import Profile from "./pages/Profile.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DatabyDate from "./pages/DatabyDate";
 import Authentication from "./pages/Authentication.jsx";
+import PassbyDate from "./pages/Getpass.jsx";
 
 const Container = styled.div`
   width: 100%;
@@ -33,6 +34,7 @@ function App() {
           <Routes>
             <Route path="/" exact element={<Dashboard />} />
             <Route path="/databydate" exact element={<DatabyDate />} />
+            <Route path="/passbydate" exact element={<PassbyDate />} />
             <Route path="/profile" exact element={<Profile />} />
           </Routes>
         </Container>

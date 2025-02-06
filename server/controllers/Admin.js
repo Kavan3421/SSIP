@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { createError } from "../error.js";
+import Gatepass from "../models/Gatepass.js";
 
 dotenv.config();
 
@@ -141,3 +142,48 @@ export const getCardByDate = async (req, res, next) => {
     next(err);
   }
 };
+
+export const getPassByDate = async (req, res, next) => {
+  try {
+    const date = req.query.date ? new Date(req.query.date) : new Date();
+    console.log("Requested Date:", date);
+
+    const startOfDay = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+    );
+    const endOfDay = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+    );
+
+    const gatepassLogs = await Gatepass.find({
+      createdAt: { $gte: startOfDay, $lt: endOfDay },
+    });
+
+    if (!gatepassLogs.length) {
+      return res
+        .status(404)
+        .json({ message: "No gatepass logs found for the specified date." });
+    }
+
+    const logsByTag = {};
+    for (const log of gatepassLogs) {
+      const { rfid_tag, time, reason, name, enrollmentNumber } = log;
+
+      if (!logsByTag[rfid_tag]) {
+        logsByTag[rfid_tag] = { logs: [] };
+      }
+      logsByTag[rfid_tag].logs.push({
+        enrollmentNumber,
+        name,
+        reason,
+        time
+      });
+    }
+
+    res.status(200).json({ logs: logsByTag });
+  } catch (err) {
+    console.error("Error in getPassByDate:", err);
+    next(err);
+  }
+};
+

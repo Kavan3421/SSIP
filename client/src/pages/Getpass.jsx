@@ -44,6 +44,19 @@ const Gatepass = () => {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
+  const generateTimeOptions = () => {
+    const options = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const formattedTime = `${String(hour).padStart(2, "0")}:${String(
+          minute
+        ).padStart(2, "0")}`;
+        options.push(formattedTime);
+      }
+    }
+    return options;
+  };
+
   const handleSubmit = async () => {
     setButtonLoading(true);
     const token = localStorage.getItem("SurveilEye-app-token");
@@ -52,7 +65,7 @@ const Gatepass = () => {
         await gatepass(token, { reason, time })
           .then((res) => {
             setButtonLoading(false);
-            alert("Message sent successfully");
+            alert("Gatepass approved successfully");
           })
           .catch((err) => {
             setButtonLoading(false);
@@ -92,12 +105,21 @@ const Gatepass = () => {
             value={reason}
             handelChange={(e) => setReason(e.target.value)}
           />
-          <TextInput
-            label="Time"
-            placeholder="Time of gatepass"
-            value={time}
-            handelChange={(e) => setTime(e.target.value)}
-          />
+          <div>
+            <label style={{ 
+              fontSize: "12px",
+              color: "black",
+              paddingRight: "20px",
+             }}>Time</label>
+            <select value={time} onChange={(e) => setTime(e.target.value)}>
+              <option value="" disabled>Select Time</option>
+              {generateTimeOptions().map((timeOption) => (
+                <option key={timeOption} value={timeOption}>
+                  {timeOption}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <Button
           text="Submit"
