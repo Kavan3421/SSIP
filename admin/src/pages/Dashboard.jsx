@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getDataByDate } from "../api/index.js"; // API call function for fetching data
-import io from "socket.io-client";
+import { getDataByDate } from "../api/index.js"; // API call function
+import { io } from "socket.io-client";
 
 const Container = styled.div`
   flex: 1;
@@ -17,7 +17,6 @@ const Section = styled.div`
   flex-direction: column;
   padding: 0px 16px;
   gap: 22px;
-  padding: 0px 16px;
   @media (max-width: 600px) {
     gap: 12px;
   }
@@ -63,7 +62,7 @@ const Dashboard = () => {
       const response = await getDataByDate(token, "");
       setLogsByTag(response?.data?.logs);
     } catch (error) {
-      console.error("Error fetching today's data:", error);
+      console.error("❌ Error fetching today's data:", error);
     } finally {
       setLoading(false);
     }
@@ -71,23 +70,33 @@ const Dashboard = () => {
 
   // Initialize Socket.IO and handle real-time updates
   useEffect(() => {
-    const newSocket = io("http://localhost:8080");
-    setSocket(newSocket);
-
-    // Listen for entry log updates
-    newSocket.on("entryLogUpdated", () => {
-      console.log("New entry log detected. Fetching updated data...");
-      getTodaysData(); // Refresh data
+    const newSocket = io("http://localhost:8080", {
+      transports: ["websocket"],
+      reconnection: true,
     });
 
-    // Listen for exit log updates
+    setSocket(newSocket);
+
+    newSocket.on("connect", () => {
+      console.log("✅ Connected to WebSocket server");
+    });
+
+    newSocket.on("entryLogUpdated", () => {
+      console.log("📌 New entry log detected. Fetching updated data...");
+      getTodaysData();
+    });
+
     newSocket.on("exitLogUpdated", () => {
-      console.log("New exit log detected. Fetching updated data...");
-      getTodaysData(); // Refresh data
+      console.log("📌 New exit log detected. Fetching updated data...");
+      getTodaysData();
+    });
+
+    newSocket.on("disconnect", () => {
+      console.warn("❌ Disconnected from WebSocket server");
     });
 
     return () => {
-      newSocket.disconnect(); // Clean up the socket connection
+      newSocket.disconnect();
     };
   }, []);
 
