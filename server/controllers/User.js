@@ -6,6 +6,10 @@ import User from "../models/User.js";
 import Feedback from "../models/Feedback.js";
 import Gatepass from "../models/Gatepass.js";
 import mongoose from "mongoose";
+import fs from "fs";
+import { createCanvas, loadImage } from "canvas";
+import QRCode from "qrcode";
+import QrCode from "../models/QrCode.js";
 
 dotenv.config();
 
@@ -218,5 +222,69 @@ export const gatePass = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+  }
+};
+
+export const generateQrCode = async (req, res) => {
+  try {
+    const { reason, time } = req.body;
+    const qrData = `Reason: ${reason}, Time: ${time}, ID: ${Date.now()}`;
+
+    // QR Code Options: Ensuring Clear Logo Visibility
+    const qrOptions = {
+      errorCorrectionLevel: "H", // High error correction to keep data outside the center
+      margin: 4, // Extra space around the QR code
+      scale: 10,
+    };
+
+    // Create a Canvas for QR Code
+    const canvas = createCanvas(300, 300);
+    await QRCode.toCanvas(canvas, qrData, qrOptions);
+
+    // Load the Logo
+    const logoPath = "public/logo.png"; // Ensure logo is inside "public" folder
+    const logo = await loadImage(logoPath);
+
+    // Get Canvas Context
+    const ctx = canvas.getContext("2d");
+    const qrSize = canvas.width;
+    const logoSize = qrSize * 0.2; // 20% of QR code size
+
+    // Draw a White Background for the Logo (Ensuring QR Code Doesn't Interfere)
+    const logoX = (qrSize - logoSize) / 2;
+    const logoY = (qrSize - logoSize) / 2;
+    ctx.fillStyle = "white";
+    ctx.fillRect(logoX, logoY, logoSize, logoSize);
+
+    // Draw Logo in the Center
+    ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+
+    // Convert to PNG Buffer
+    const qrBuffer = canvas.toBuffer("image/png");
+
+    // Save QR Code as Image
+    const fileName = `qr-${Date.now()}.png`;
+    const qrPath = `public/qrcodes/${fileName}`;
+    fs.writeFileSync(qrPath, qrBuffer);
+
+    // Save Data to MongoDB
+    const newQrCode = new QrCode({
+      qrData,
+      reason,
+      time,
+    });
+
+    await newQrCode.save(); // Save to database
+
+    // Send the Image URL & Database Entry Confirmation
+    res.status(200).json({
+      message: "QR Code generated and stored successfully!",
+      qrImageUrl: `http://localhost:8080/qrcodes/${fileName}`,
+      qrData,
+    });
+
+  } catch (error) {
+    console.error("QR Code Generation Error:", error);
+    res.status(500).json({ message: "Error generating QR code", error });
   }
 };

@@ -51,6 +51,7 @@ app.get("/", (req, res) => {
 // API Routes
 app.use("/api/admin", AdminRoutes);
 app.use("/api/user", UserRoutes);
+app.use("/qrcodes", express.static("public/qrcodes"));
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {

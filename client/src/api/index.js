@@ -42,3 +42,8 @@ export const gatepass = async (token, data) => {
     throw error.response?.data || { message: "An unexpected error occurred." };
   }
 };
+
+export const generateQrCode = async (token, data) =>
+  await API.post("/user/generate-qr", data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });

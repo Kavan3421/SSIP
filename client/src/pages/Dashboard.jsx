@@ -5,8 +5,8 @@ import EntryExitCard from "../components/EntryExitCard.jsx";
 import io from "socket.io-client";
 
 const Container = styled.div`
-  flex: 1;
   height: 100%;
+  flex: 1;
   display: flex;
   justify-content: center;
   padding: 22px 0px;
