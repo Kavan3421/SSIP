@@ -21,7 +21,9 @@ const io = new Server(httpServer, {
 
 const allowedOrigins = [
   "http://localhost:3000", // Admin frontend
-  "http://localhost:3001", // Client frontend
+  "http://localhost:3001",
+  "https://surveileye-admin.netlify.app/",
+  "https://surveileye.netlify.app/", // Client frontend
 ];
 // Middleware
 app.use(
