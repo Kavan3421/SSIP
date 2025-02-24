@@ -30,7 +30,7 @@ function App() {
       <BrowserRouter>
         {currentUser ? (
         <Container>
-          <Navbar />
+          <Navbar currentUser={currentUser}/>
           <Routes>
             <Route path="/" exact element={<Dashboard />} />
             <Route path="/databydate" exact element={<DatabyDate />} />
