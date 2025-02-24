@@ -17,8 +17,8 @@ const io = new Server(httpServer, {
     origin: [
       "http://localhost:3000",
       "http://localhost:3001",
-      "https://surveileye-admin.netlify.app/",
-      "https://surveileye.netlify.app/"
+      "https://surveileye-admin.netlify.app",
+      "https://surveileye.netlify.app"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
@@ -28,8 +28,8 @@ const io = new Server(httpServer, {
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
-  "https://surveileye-admin.netlify.app/",
-  "https://surveileye.netlify.app/",
+  "https://surveileye-admin.netlify.app",
+  "https://surveileye.netlify.app",
 ];
 
 // Middleware
