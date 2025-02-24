@@ -108,7 +108,7 @@ export const getCardByDate = async (req, res, next) => {
 
       // Adjust timestamp for IST (UTC+5:30)
       const utcDate = new Date(timestamp);
-      const adjustedDate = new Date(utcDate.getTime() - 5.5 * 60 * 60 * 1000);
+      const adjustedDate = new Date(utcDate.getTime());
       const formattedTimestamp = adjustedDate.toLocaleString("en-IN", {
         hour12: true,
         day: "2-digit",

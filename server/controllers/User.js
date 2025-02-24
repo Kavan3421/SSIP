@@ -143,7 +143,7 @@ export const getCardByDate = async (req, res, next) => {
       const type = entryLogs.includes(log) ? "entry" : "exit";
 
       const utcDate = new Date(timestamp);
-      const adjustedDate = new Date(utcDate.getTime() - 5.5 * 60 * 60 * 1000);
+      const adjustedDate = new Date(utcDate.getTime());
       const formattedTimestamp = adjustedDate.toLocaleString("en-IN", {
         hour12: true,
         day: "2-digit",
