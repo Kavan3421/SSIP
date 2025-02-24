@@ -70,7 +70,7 @@ const Dashboard = () => {
 
   // Initialize Socket.IO and handle real-time updates
   useEffect(() => {
-    const newSocket = io("http://localhost:8080", {
+    const newSocket = io("https://ssip-xv3o.onrender.com", {
       transports: ["websocket"],
       reconnection: true,
     });
