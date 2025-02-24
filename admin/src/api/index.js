@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8080/api/", // Adjust to your Flask server URL
+  baseURL: "https://ssip-xv3o.onrender.com/api/", // Adjust to your Flask server URL
 });
 
 // Login a user

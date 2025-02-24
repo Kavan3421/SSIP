@@ -260,26 +260,21 @@ export const generateQrCode = async (req, res) => {
     ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
 
     // Convert to PNG Buffer
-    const qrBuffer = canvas.toBuffer("image/png");
+    const qrBase64 = canvas.toDataURL("image/png");
 
-    // Save QR Code as Image
-    const fileName = `qr-${Date.now()}.png`;
-    const qrPath = `public/qrcodes/${fileName}`;
-    fs.writeFileSync(qrPath, qrBuffer);
-
-    // Save Data to MongoDB
+    // Save to Database
     const newQrCode = new QrCode({
       qrData,
       reason,
       time,
+      qrBase64, // Store Base64 image in DB
     });
 
     await newQrCode.save(); // Save to database
 
-    // Send the Image URL & Database Entry Confirmation
     res.status(200).json({
-      message: "QR Code generated and stored successfully!",
-      qrImageUrl: `http://localhost:8080/qrcodes/${fileName}`,
+      message: "QR Code generated successfully!",
+      qrImage: qrBase64,
       qrData,
     });
 

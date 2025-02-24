@@ -127,8 +127,8 @@ const Gatepass = () => {
 
       const response = await generateQrCode(token, { reason, time });
 
-      if (response?.data?.qrImageUrl) {
-        setQrCode(response.data.qrImageUrl);
+      if (response?.data?.qrImage) {
+        setQrCode(response.data.qrImage);
       } else {
         console.error("QR Code URL not found in response:", response);
       }
