@@ -279,7 +279,7 @@ export const generateQrCode = async (req, res) => {
     // Send the Image URL & Database Entry Confirmation
     res.status(200).json({
       message: "QR Code generated and stored successfully!",
-      qrImageUrl: `https://ssip-xv3o.onrender.com/qrcodes/${fileName}`,
+      qrImageUrl: `http://localhost:8080/qrcodes/${fileName}`,
       qrData,
     });
 
