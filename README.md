@@ -67,11 +67,14 @@ npm start
 ### 🔹 User Dashboard  
 ![User Dashboard](screenshots/admin-dashboard.png)  
 
-### 🔹 Admin Dashboard  
-![Admin Dashboard](screenshots/admin-dashboard.png)  
+### 🔹 User History Section  
+![User History Section](screenshots/admin-dashboard.png)  
 
-### 🔹 RFID Entry Logging  
-![RFID Entry Logging](screenshots/rfid-entry.png)  
+### 🔹 Admin Dashboard  
+![Admin Dashboard](screenshots/admin-dashboard.png)
+
+### 🔹 Admin History Section  
+![Admin History Section](screenshots/admin-dashboard.png)
 
 ### 🔹 QR Code Visitor Pass  
 ![QR Code Visitor Pass](screenshots/qr-code-pass.png)  
