@@ -65,7 +65,7 @@ npm start
 ## 📸 Screenshots
 
 ### 🔹 User Dashboard  
-![User Dashboard](Screenshots/AdminDashboard.jpg)  
+![User Dashboard](Screenshots/UserDashboard.jpg)  
 
 ### 🔹 User History Section  
 ![User History Section](Screenshots/UserHistory.jpg)  
