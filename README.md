@@ -65,19 +65,19 @@ npm start
 ## 📸 Screenshots
 
 ### 🔹 User Dashboard  
-![User Dashboard](screenshots/admin-dashboard.png)  
+![User Dashboard](Screenshots/AdminDashboard.jpg)  
 
 ### 🔹 User History Section  
-![User History Section](screenshots/admin-dashboard.png)  
+![User History Section](Screenshots/UserHistory.jpg)  
 
 ### 🔹 Admin Dashboard  
-![Admin Dashboard](screenshots/admin-dashboard.png)
+![Admin Dashboard](Screenshots/AdminDashboard.jpg)
 
 ### 🔹 Admin History Section  
-![Admin History Section](screenshots/admin-dashboard.png)
+![Admin History Section](Screenshots/AdminHistory.jpg)
 
 ### 🔹 QR Code Visitor Pass  
-![QR Code Visitor Pass](screenshots/qr-code-pass.png)  
+![QR Code Visitor Pass](Screenshots/GatePass.jpg)  
 
 ---
 
